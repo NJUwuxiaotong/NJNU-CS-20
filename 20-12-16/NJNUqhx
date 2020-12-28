@@ -1,0 +1,122 @@
+#include<stdio.h>
+#include<malloc.h>
+int Length=0;
+void Menu(void);
+int Choice(void);
+int *initialize(int n);
+void add(int array[],int index,int value);
+int delet(int array[],int index);
+int find(int array[],int index);
+void show(int array[]);
+int main()
+{
+	int flag=1,index=0,value=0,*array;
+	Menu();
+	while(flag)
+	{
+		switch(Choice())
+		{
+			case 0:
+					flag=0;
+					break;
+			case 1:
+					printf("请输入初始化数组长度:\n");
+					scanf("%d",&Length);
+					array=initialize(Length);
+					break;
+			case 2:
+					printf("请输入添加的位置和数值:\n");
+					scanf("%d%d",&index,&value);
+					add(array,index,value);
+					break;
+			case 3:
+					printf("请输入删除的位置:\n");
+					scanf("%d",&index);
+					delet(array,index);
+					break;
+			case 4:
+					printf("请输入查询的位置:\n");
+					scanf("%d",&index);
+					find(array,index);
+					break;
+			case 5:
+					show(array);
+					break;
+		}
+	}
+	return 0;
+}
+void Menu(void)
+{
+	printf("选项菜单:\n");
+	printf("0.退出\n");
+	printf("1.初始化长度为n的数组\n");
+	printf("2.在数组指定位置添加数值\n");
+	printf("3.删除数组指定位置数值\n");
+	printf("4.查询数组指定位置数值\n");
+	printf("5.显示当前数组\n");
+}
+int Choice(void)
+{
+	int choice; 
+	printf("请输入你想进行的操作:\n");
+	scanf("%d",&choice);
+	return choice;
+}
+int *initialize(int n)
+{
+	int *p,i;
+	p=(int*)malloc(sizeof(int)*n);
+	for(i=0;i<n;i++)
+		p[i]=0;
+	return p;
+}
+void add(int array[],int index,int value)
+{
+	if(index<0||index>=Length)
+		printf("添加数值失败\n");
+	else
+	{
+		array[index]=value;
+		printf("添加数值成功\n");
+	}
+}
+int delet(int array[],int index)
+{
+	int value,i;
+	if(index<0||index>=Length)
+	{
+		printf("删除位置数值失败\n");
+		return -1;
+	}
+	else
+	{
+		value=array[index];
+		for(i=index;i<Length-1;i++)
+			array[i]=array[i+1];
+		Length--;
+		printf("删除的数值为%d\n",value);
+		return value;
+	}
+}
+int find(int array[],int index)
+{
+	if(index<0||index>=Length)
+	{
+		printf("查询失败\n");
+		return -1;
+	}
+	else
+	{
+		printf("查询位置数值为%d\n",array[index]);
+		return array[index];
+	}
+}
+void show(int array[])
+{
+	int i;
+	printf("数组长度为%d\n",Length);
+	for(i=0;i<Length;i++)
+		printf("%d ",array[i]);
+	printf("\n");
+}
