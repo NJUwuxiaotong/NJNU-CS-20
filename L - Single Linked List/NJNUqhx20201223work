@@ -1,0 +1,209 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+	int value;
+	struct node* next;
+};
+void menu(void)
+{
+	printf("选项菜单:\n");
+	printf("1.初始化链表\n");
+	printf("2.插入新节点\n");
+	printf("3.删除节点\n");
+	printf("4.搜索值\n");
+	printf("5.排序\n");
+	printf("6.打印链表\n");
+	printf("7.批量添加节点\n");
+ } 
+ int Choice(void)
+ {
+ 	int choice=0;
+ 	printf("请输入你想进行的操作:\n");
+	scanf("%d",&choice);
+	return choice;
+ }
+ struct node* initial(void)
+ { 
+ 	struct node* newcode=(struct node*)malloc(sizeof(struct node));
+ 	printf("请初始化头结点的值\n");
+ 	scanf("%d",&newcode->value);
+ 	newcode->next=NULL;
+ 	printf("初始化成功\n");
+	return newcode;
+ }
+ struct node* add(struct node* head)
+ {
+ 	struct node* temp=head;
+ 	int choice; 
+ 	struct node* newcode=(struct node*)malloc(sizeof(struct node));
+ 	printf("请选择添加方式:\n1.头部插入\n2.尾部插入\n");
+ 	scanf("%d",&choice);
+ 	printf("请输入添加节点的值:\n");
+ 	scanf("%d",&newcode->value);
+ 	if(choice==1)
+ 	{
+ 		newcode->next=temp;
+ 		head=newcode;
+ 	}else
+ 	{
+ 		while(temp->next)
+ 			temp=temp->next;
+ 		temp->next=newcode;
+ 		newcode->next=NULL;
+ 	}
+ 	printf("添加成功\n");
+ 	return head;
+ }
+ int count(struct node* head)
+ {
+ 	struct node* temp=head;
+ 	int cnt=0;
+ 	while(temp!=NULL)
+ 	{
+ 		cnt++;
+ 		temp=temp->next;
+ 	}
+ 	return cnt;
+ }
+ struct node* delet(struct node* head)
+ {
+ 	int location=0,cnt=1;
+ 	struct node* temp=head,*prev;
+ 	printf("请输入你想删除的位置\n");
+ 	scanf("%d",&location);
+ 	if(location<0||location>count(head))
+ 	{
+ 		printf("无效位置\n");
+ 	}
+ 	else
+ 	{
+ 		if(location==1)
+ 		{
+ 			head=temp->next;
+ 			free(temp);
+ 		}else if(location==count(head))
+ 		{
+ 			while(temp->next)
+ 			{
+ 				prev=temp;
+ 				temp=temp->next;
+ 			}
+ 			prev->next=NULL;
+ 			free(temp);
+ 		}else
+ 		{
+ 			while(cnt<location)
+ 			{
+ 				prev=temp;
+ 				temp=temp->next;
+ 			}
+ 			prev->next=temp->next;
+ 			free(temp);
+ 		}
+ 		printf("删除成功\n"); 
+ 	}
+ 	return head;
+ }
+ void print(struct node* head)
+ {
+ 	struct node* temp=head;
+ 	while(temp)
+ 	{
+ 		printf("%d ",temp->value);
+ 		temp=temp->next;
+ 	}
+ 	printf("\n打印成功\n");
+ }
+ void search(struct node* head)
+ {
+ 	struct node* temp=head;
+ 	int val,location=0;
+ 	printf("请输入你想查询的值\n");
+ 	scanf("%d",&val);
+ 	while(temp)
+ 	{
+ 		location++;
+ 		if(temp->value==val)
+ 		{
+ 			printf("查询成功，位置为%d\n",location);
+ 			break;
+ 		}else
+ 		{
+ 			temp=temp->next;
+ 		}
+ 	}
+ 	if(temp==NULL)
+ 		printf("查询失败\n");
+ }
+ void sort(struct node* head)
+ {
+ 	struct node* prev,*last;
+ 	int i,temp;
+ 	if(count(head)>2)
+ 	{
+ 		for(i=0;i<count(head);i++)
+ 		{
+ 			prev=head->next;
+ 			last=head;
+ 			while(prev)
+ 			{
+ 				if(prev->value<last->value)
+ 				{
+ 					temp=prev->value;
+ 					prev->value=last->value;
+ 					last->value=temp;
+ 				}//交换值但未交换节点 
+				 prev=prev->next;
+				 last=last->next; 
+ 			}
+ 		}
+ 	}
+ 	printf("排序成功\n");
+ }
+ struct node* creatnew(struct node* head)
+ {
+ 	struct node* newcode=(struct node*)malloc(sizeof(struct node));
+ 	struct node* temp=head;
+ 	while(temp->next)
+ 		temp=temp->next;
+ 	temp->next=newcode;
+ 	newcode->next=NULL;
+ 	return newcode;
+ }
+ struct node* addmore(struct node* head)
+ {
+ 	int cnt,number;
+ 	struct node* temp;
+ 	printf("请输入添加节点的个数\n");
+ 	scanf("%d",&number);
+ 	for(cnt=0;cnt<number;cnt++)
+ 	{
+ 		temp=creatnew(head);
+ 		printf("请输入你想添加的值\n");
+ 		scanf("%d",&temp->value);
+ 	}
+ 	printf("批量添加成功\n");
+ 	return head;
+ }
+ int main()
+ {
+ 	int flag=1;
+ 	struct node* head;
+ 	menu();
+ 	while(flag)
+ 	{
+ 		switch(Choice())
+ 		{
+ 			case 1:head=initial();break;
+ 			case 2:head=add(head);break;
+ 			case 3:head=delet(head);break;
+ 			case 4:search(head);break;
+			case 5:sort(head);break; 
+			case 6:print(head);break;
+			case 7:head=addmore(head);break;
+ 			default:flag=0;break;
+ 		}
+ 	}
+ 	return 0;
+ }
