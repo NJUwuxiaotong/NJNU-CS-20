@@ -1,0 +1,13 @@
+Implementation of Queue
+
+Main Function:
+   First coming first out
+
+Structure:
+   an array or a linked list
+
+Methods:
+   initial
+   push
+   pop
+   others ...

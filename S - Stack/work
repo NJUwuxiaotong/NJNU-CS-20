@@ -1,0 +1,13 @@
+Implementation of Stack
+
+Main Functions:
+  First coming and last out
+
+Structure:
+  an array or a linked list
+
+Methods:
+  initial
+  push --> add a value
+  pop  --> delte a value
+  others ... 
