@@ -1,0 +1,254 @@
+/*	create a stack by dynarray
+*/
+#include<stdio.h>
+#include<stdlib.h>
+struct Stack
+{
+	int top;
+	int capacity;
+	int *array;
+};
+typedef struct Stack stack;
+stack* initialize(void)
+{
+	stack* s=(stack*)malloc(sizeof(stack));
+	s->top=-1;
+	printf("please input the size:");
+	scanf("%d",&s->capacity);
+	s->array=(int*)malloc(sizeof(int)*s->capacity);
+	return s;
+}
+void menu(void)
+{
+	printf("menu:\n");
+	printf("1.initialize\n");
+	printf("2.push\n");
+	printf("3.pop\n");
+	printf("4.doublethecapacity\n");
+	printf("5.printelements\n");
+	printf("6.deletethestack\n");
+	printf("others:\n");
+	printf("1.isfull\n");
+	printf("2.isempty\n");
+}
+int Choice(void)
+{
+	int choice=0;
+	printf("please input your choice:");
+	scanf("%d",&choice);
+	return choice;
+ } 
+ int isfull(stack* s)
+ {
+ 	return (s->top==s->capacity-1);
+ }
+ int isempty(stack* s)
+ {
+ 	return (s->top==-1);
+ }
+ void push(stack* s,int value)
+ {
+ 	if(isfull(s))
+ 		printf("stack is full,please double the capacity\n");
+ 	else
+ 		s->array[++s->top]=value;
+ }
+ int pop(stack* s)
+ {
+ 	if(isempty(s))
+ 		{
+ 			printf("stack is empty,please push first\n");
+ 			return 0;
+		 }
+ 	else
+ 		return s->array[s->top--];
+ }
+ void doublethecapacity(stack* s)
+ {
+ 	s->capacity=2*s->capacity;
+ 	realloc(s,s->capacity);
+ }
+ void printelements(stack* s)
+ {
+ 	int i=0;
+ 	for(i=0;i<=s->top;i++)
+ 		printf("%d ",s->array[i]);
+ }
+ void deletethestack(stack* s)
+ {
+ 	if(s)
+ 	{
+ 		if(s->array)
+ 			free(s->array);
+ 		free(s);
+ 	}
+ 	printf("the stack has deleted\n");
+ }
+int main() 
+{
+	int flag=1,value;
+	stack* s=NULL;
+	menu();
+	while(flag)
+	{
+		switch(Choice())
+		{
+			case 1:
+				s=initialize();
+				break;
+			case 2:{
+				printf("please input value:");
+				scanf("%d",&value);
+				push(s,value);
+				break;
+			}
+			case 3:{
+				value=pop(s);
+				if(value)
+					printf("the pop is %d\n",value);
+				break;
+			}
+			case 4:{
+				doublethecapacity(s);
+				printf("the stack has doubled\n");
+				break;
+			}
+			case 5:{
+				printf("the elements are:");
+				printelements(s);
+				break;
+			}
+			case 6:{
+				deletethestack(s);
+				break;
+			}
+			default:{
+				flag=0;
+				break; 
+			}
+		}
+	}
+	return 0;
+}
+/*	create a stack by linllist
+*/
+#include<stdio.h>
+#include<stdlib.h>
+struct Stack
+{
+	int value;
+	struct Stack* next;
+};
+typedef struct Stack stack;
+void menu(void)
+{
+	printf("menu:\n");
+	printf("1.initialize\n");
+	printf("2.push\n");
+	printf("3.pop\n");
+	printf("4.printtheelements\n");
+	printf("5.deletethestack\n");
+}
+int Choice(void)
+{
+	int choice=0;
+	printf("please input your choice:");
+	scanf("%d",&choice);
+	return choice;
+ } 
+ stack* initialize(void)
+ {
+ 	return NULL;
+ }
+ void push(stack** s,int data)
+ {
+ 	stack* newnode=(stack*)malloc(sizeof(stack));
+ 	newnode->value=data;
+ 	newnode->next=*s;
+ 	*s=newnode;
+ }
+ int isempty(stack* s)
+ {
+ 	return s==NULL;
+ }
+ int pop(stack** s)
+ {
+ 	int data;
+ 	stack* temp;
+ 	if(isempty(*s))
+ 	{
+ 		printf("the stack is empty\n");
+ 		return 0;
+ 	}else
+	{
+ 		temp=*s;
+ 		*s=temp->next;
+ 		data=temp->value;
+ 		free(temp);
+ 		return data;
+ 	}
+ }
+ void printtheelements(stack** s)
+ {
+ 	stack* temp=*s;
+ 	printf("the elements are:");
+ 	while(temp)
+ 	{
+ 		printf("%d ",temp->value);
+ 		temp=temp->next;
+ 	}
+ }
+ void deletethestack(stack** s)
+ {
+ 	stack *temp=*s,*prev=*s;
+ 	while(prev)
+ 	{
+ 		temp=prev;
+ 		prev=prev->next;
+ 		free(temp);
+ 	}
+ 	free(*s);
+ 	*s=NULL;
+ }
+int main() 
+{
+	int flag=1,data;
+	stack* s=NULL;
+	menu();
+	while(flag)
+	{
+		switch(Choice())
+		{
+			case 1:
+				s=initialize();
+				break;
+			case 2:{
+				printf("please input value:");
+				scanf("%d",&data);
+				push(&s,data);
+				printf("push ok\n");
+				break;
+			}
+			case 3:{
+				data=pop(&s);
+				if(data)
+					printf("the pop is %d\n",data);
+				break;
+			}
+			case 4:{
+				printtheelements(&s);
+				break;
+			}
+			case 5:{
+				deletethestack(&s);
+				printf("the stack has deleted\n");
+				break;
+			}
+			default:{
+				flag=0;
+				break;
+			}
+		}
+	}
+	return 0;
+}
