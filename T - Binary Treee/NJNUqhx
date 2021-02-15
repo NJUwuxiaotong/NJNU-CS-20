@@ -1,0 +1,240 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct BinaryTree
+{
+	int val;
+	struct BinaryTree* left;
+	struct BinaryTree* right;
+};
+struct TreeNode
+{
+	struct BinaryTree* node;
+	struct TreeNode* next;
+};
+struct Queue
+{
+	struct TreeNode* front;
+	struct TreeNode* rear;
+};
+typedef struct BinaryTree BT;
+
+void Menu(void)
+{
+	printf("Menu:\n");
+	printf("1.InsertInOrder\n");
+	printf("2.BreadthFirstSearch\n");
+	printf("3.DepthFirstSearch\n");
+	printf("4.DeleteTree\n");
+}
+int Choice(void)
+{
+	int choice=0;
+	printf("please input your choice:");
+	scanf("%d",&choice);
+	return choice;
+}
+BT* InsertInOrder(BT* tree,int value)
+{
+	if(!tree)
+	{
+		tree=(BT*)malloc(sizeof(BT));
+		tree->left=NULL;
+		tree->right=NULL;
+		tree->val=value;
+	}else
+	{
+		if(value<tree->val)
+			tree->left=InsertInOrder(tree->left,value);
+		else if(value>tree->val)
+			tree->right=InsertInOrder(tree->right,value);
+	}
+	return tree;
+}
+void preorder(BT* tree)
+{
+	if(tree)
+	{
+		printf("%d ",tree->val);
+		preorder(tree->left);
+		preorder(tree->right);
+	}
+}
+void DeleteTree(BT* tree)
+{
+	if(tree->left)
+		DeleteTree(tree->left);
+	if(tree->right)
+		DeleteTree(tree->right);
+	free(tree);
+	printf("deleting...\n");
+} 
+bool IsEmptyQueue(Queue* q)
+{
+	if(q->front==NULL)
+		return true;
+	else
+		return false;
+}
+void Enqueue(Queue* q,BT* tree)
+{
+	TreeNode* treenode=(TreeNode*)malloc(sizeof(TreeNode));
+	treenode->node=tree;
+	treenode->next=NULL;
+	if(q->rear)
+		q->rear->next=treenode;
+	q->rear=treenode;
+	if(!q->front)
+		q->front=q->rear;
+}
+BT* Dequeue(Queue* q)
+{
+	BT* returnnode=NULL;
+	TreeNode* temp=NULL;
+	if(!IsEmptyQueue(q))
+	{
+		returnnode=q->front->node;
+		temp=q->front;
+		q->front=q->front->next;
+		free(temp);
+	}
+	return returnnode;
+}
+void DeleteQueue(Queue* q)
+{
+	TreeNode* temp=NULL;
+	while(q->front)
+	{
+		temp=q->front;
+		q->front=q->front->next;
+		free(temp);
+	}
+	q->front=q->rear=NULL;
+	free(q);
+	q=NULL;
+}
+Queue* InitialQueue(void)
+{
+	Queue* q=(Queue*)malloc(sizeof(Queue));
+	q->front=q->rear=NULL;
+	return q; 
+}
+void BreadthFirstSearch(BT* tree)
+{
+	Queue* q=InitialQueue();
+	BT* temp=NULL;
+	if(!tree)
+		return;
+	Enqueue(q,tree);
+	while(!IsEmptyQueue(q))
+	{
+		temp=Dequeue(q);
+		printf("%d ",temp->val);
+		if(temp->left)
+			Enqueue(q,temp->left);
+		if(temp->right)
+			Enqueue(q,temp->right);
+	}
+	DeleteQueue(q);
+}
+void Push(TreeNode** stack,BT* tree)
+{
+	TreeNode* treenode=(TreeNode*)malloc(sizeof(TreeNode));
+	treenode->node=tree;
+	treenode->next=*stack;
+	*stack=treenode;
+}
+bool IsEmptyStack(TreeNode* stack)
+{
+	if(stack==NULL)
+		return true;
+	else
+		return false;
+}
+BT* Pop(TreeNode** stack)
+{
+	BT* returnnode=NULL;
+	TreeNode* temp=*stack;
+	if(!IsEmptyStack(*stack))
+	{
+		temp=*stack;
+		returnnode=(*stack)->node;
+		*stack=(*stack)->next;
+		free(temp);
+	}
+	return returnnode;
+}
+void DeleteStack(TreeNode* stack)
+{
+	while(stack)
+	{
+		TreeNode* temp=stack;
+		stack=stack->next;
+		free(temp);
+	}
+}
+void DepthFirstSearch(BT* tree)
+{
+	TreeNode* stack=NULL;
+	BT* temp=tree;
+	if(!tree)
+		return;
+	while(1)
+	{
+		while(temp)
+		{
+			printf("%d ",temp->val);
+			Push(&stack,temp);
+			temp=temp->left;
+		}
+		if(IsEmptyStack(stack))
+			break;
+		temp=Pop(&stack);
+		temp=temp->right;
+	}
+	DeleteStack(stack);
+}
+int main()
+{
+	BT* tree=NULL;
+	int flag=1;
+	while(flag)
+	{
+		Menu();
+		switch(Choice())
+		{
+			case 1:{
+				int n,value;
+				printf("How many:");
+				scanf("%d",&n);
+				for(int i=0;i<n;i++)
+				{
+					printf("please input the value:");
+					scanf("%d",&value);
+					tree=InsertInOrder(tree,value);
+				}
+				break;
+			}
+			case 2:{
+				BreadthFirstSearch(tree);
+				printf("\n");
+				break;
+			}
+			case 3:{
+				DepthFirstSearch(tree);
+				printf("\n");
+				break;
+			}
+			case 4:{
+				DeleteTree(tree);
+				tree=NULL;
+				break;
+			}
+			default:{
+				flag=0;
+				break;
+			}
+		}
+	}
+	return 0;
+ } 
